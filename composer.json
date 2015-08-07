@@ -1,0 +1,21 @@
+{
+	"name": "forgeessentials/remote-panel",
+	"license": "proprietary",
+	"type": "project",
+	"autoload": {
+		"psr-4": {
+			"": "src/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/ForgeEssentials/PHPRemoteLib"
+		}
+	],
+	"require": {
+		"php": ">=5.3.9",
+		"forgeessentials/remote": "@dev",
+		"twig/twig": "~1.0"
+	}
+}

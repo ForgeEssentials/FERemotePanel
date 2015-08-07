@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html {% if ngApp is defined %}{% if ngApp is empty %}ng-app{% else %}ng-app="{{ ngApp }}"{% endif %}{% endif %} class="{{ app.environment }}">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Welcome!{% endblock %}</title>
+{% block head %}
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+{% endblock %}
+<!-- STYLESHEETS -->
+{% block stylesheets %}{% endblock %}
+<!-- JAVASCRIPT LIBRARIES -->
+{% block header_js %}{% endblock %}
+</head>
+<body>
+{% block body %}{% endblock %}
+<!-- JS -->
+{% block javascripts %}{% endblock %}
+</body>
+</html>

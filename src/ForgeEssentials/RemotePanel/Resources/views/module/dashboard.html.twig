@@ -1,0 +1,34 @@
+{% verbatim %} <h1>Dashboard</h1>
+
+<h2>Players - <span ng-bind="data.players.length|ifUndefined:0">0</span></h2>
+<table>
+	<thead>
+		<th>Name</th>
+		<th>X</th>
+		<th>Y</th>
+		<th>Z</th>
+		<th>DIM</th>
+		<th>Health</th>
+		<th>Armor</th>
+		<th>Hunger</th>
+		<th>Saturation</th>
+	</thead>
+	<tr ng-cloak ng-repeat="player in data.players | orderBy: 'name'">
+		<td ng-bind="player.name | ifUndefined:'N/A'">-</td>
+		<td ng-bind="player.data.location.x | number:1 | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.location.y | number:1 | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.location.z | number:1 | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.location.dim | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.health | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.armor | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.hunger | ifUndefined:'-'">0</td>
+		<td ng-bind="player.data.saturation | ifUndefined:'-'">0</td>
+	</tr>
+</table>
+
+<h2>Remote Capabilities</h2>
+<p ng-bind="data.capabilities | join">Loading... Please wait</p>
+
+<h2>Server Log</h2>
+<textarea readonly="readonly" style="min-width:100%; max-width:100%; height:188px;" ng-model="data.log" ng-list="&#10;">Loading... Please wait</textarea>
+{% endverbatim %}

@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'ForgeEssentials Remote Panel' %}
+
+{# ######################################################### #}
+
+{% block head %}
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=device-dpi, user-scalable=0">
+	<base href="{{ app.env.basePath }}/">
+{% endblock %}
+
+{# ######################################################### #}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+	<link rel="stylesheet" href="{{ asset('js/lib/angular-chart/angular-chart.css') }}">
+{% endblock %}
+
+{# ######################################################### #}
+
+{% block header_js %}
+	<script>
+		var moduleDependencies = [{% for module in app.modules %}'module/{{ module }}', {% endfor %}];
+	</script>
+	<!-- <script type="text/javascript" src="{{ asset('js/lib/jquery/jquery-2.1.4.min.js') }}"></script> -->
+	<script type="text/javascript" src="{{ asset('js/lib/angular/angular.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/lib/angular/angular-route.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/lib/require.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
+{% endblock %}
+
+{# ######################################################### #}
+
+{% block javascripts %}
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{# ######################################################### #}
+
+{% block body %}
+<div class="nav-bar" id="header">
+	<!-- START header -->
+	{% block header %}{% include "header.html.twig" %}{% endblock %}
+	<!-- END header -->
+</div>
+<div id="wrapper">
+	<div id="sidebar">
+		<!-- START sidebar -->
+		{% block sidebar %}{% include "sidebar.html.twig" %}{% endblock %}
+		<!-- END sidebar -->
+	</div>
+	<div id="content">
+		<!-- START content -->
+		{% block content %}
+		<div ng-view>{% if content is defined %}{{ content|raw }}{% else %}
+			<h1>Loading</h1>
+			<p>If no content appears, please be sure that JavaScript is enabled in your browser.</p>
+		{% endif%}</div>
+		{% endblock content %}
+		<!-- END content -->
+	</div>
+</div>
+<div class="nav-bar" id="footer">
+	<!-- START footer -->
+	{% block footer %}{% include "footer.html.twig" %}{% endblock %}
+	<!-- END footer -->
+</div>
+{% endblock %}
