@@ -8,7 +8,6 @@ define(['app'], function(app) {
 		function startUpdateTimer() {
 			if (activeModule.interval && activeModule.interval > 0)
 				timer = setTimeout(manager.update, activeModule.interval, activeModule);
-				// setInterval(manager.update, activeModule.interval, activeModule);
 		}
 
 		manager.add = function(module) {
@@ -23,7 +22,6 @@ define(['app'], function(app) {
 
 			if (activeModule)
 				clearTimeout(timer);
-				// clearInterval(timer);
 
 			activeModule = module;
 			sidebar.select(id);

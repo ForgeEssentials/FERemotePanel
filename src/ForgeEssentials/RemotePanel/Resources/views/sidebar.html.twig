@@ -1,5 +1,5 @@
-<ul>
-	<li ng-repeat="item in sidebar.items | orderObjectBy:'order'" ng-class="{active: item.id == sidebar.selected}" ng-click="sidebar.select(item.id)">
-		<a href="module/{{ angular('item.id') }}">{{ angular('item.label') }}</a>
+<ul class="nav">
+	<li ng-cloak ng-repeat="item in sidebar.items | orderObjectBy:'order'" ng-class="{active: item.id == sidebar.selected}" ng-click="sidebar.select(item.id)">
+		<a href="module/{{ angular('item.id') }}" ng-bind="item.label"></a>
 	</li>
 </ul>

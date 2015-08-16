@@ -1,5 +1,5 @@
-define([], function() {
-	var app = angular.module('app', ['ngRoute'/*, 'chart.js'*/]);
+define(['n3'], function() {
+	var app = angular.module('app', ['ngRoute', 'n3-line-chart', 'chart.js']);
 
 	//------------------------------------------------------------
 	
@@ -24,6 +24,7 @@ define([], function() {
 				moduleId : module.id,
 				templateUrl : 'module/' + module.id + '/view',
 				controller : 'module_' + module.id,
+				controllerAs : 'module',
 			});
 		}]); 
 
@@ -35,6 +36,7 @@ define([], function() {
 		if (!module.controller) {
 			module.controller = ['$scope', function($scope) {
 				$scope.data = module.data;
+				module.scope = $scope;
 			}];
 		}
 		app.controller('module_' + module.id, module.controller);

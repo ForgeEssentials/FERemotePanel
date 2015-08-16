@@ -79,8 +79,7 @@ class RemotePanel {
 			$this->renderError("This module does not exist");
 			return;
 		}
-		//echo $this->getTwig()->render('index.html.twig', array('content' => $module->render($this->getTwig())));
-		echo $this->getTwig()->render('index.html.twig', array('content' => ''));
+		echo $this->getTwig()->render('index.html.twig', array('content' => $module->render($this->getTwig())));
 	}
 
 	public function render() {

@@ -19,31 +19,20 @@ a {
 	color: #ccc;
 }
 
-#sidebar li:hover {
-	background: rgba(0, 0, 0, 0.3);
+#sidebar .nav > li > a:focus, #sidebar .nav > li > a:hover {
+	background-color: #131619;
+	text-decoration: none;
 }
 
-#sidebar li.active {
-	background: #0073aa;
+#sidebar .nav > .active > a, #sidebar .nav > .active > a:hover, #sidebar .nav > .active > a:focus {
+	background-color: #0073aa;
 }
 
 /************************/
 
-table, th, td {
-	border: 1px solid #666;
-	border-collapse: collapse;
-	padding: 5px;
+textarea.log {
+	background: black;
+	color: #090;
 }
 
-table th {
-	background-color: rgba(0, 0, 0, 0.1);
-}
-
-table tr:nth-child(odd) {
-	/*background-color: #f1f1f1;*/
-	background-color: rgba(0, 0, 0, 0.05);
-}
-
-table tr:nth-child(even) {
-	/*background-color: #ffffff;*/
-}
+/************************/
