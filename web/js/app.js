@@ -3,6 +3,11 @@ define(['n3'], function() {
 
 	//------------------------------------------------------------
 	
+	app.loginPopup = $('#auth-popup');
+	app.loginPopup.on('shown.bs.modal', function() {
+		$('#login-username').focus();
+	});
+	
 	app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
 		$routeProvider.otherwise({
@@ -10,13 +15,33 @@ define(['n3'], function() {
 		});
 	}]);
 
-	app.run(['$rootScope', 'sidebar', 'moduleManager', function($rootScope, sidebar, moduleManager) {
+	app.run(['$rootScope', '$http', 'sidebar', 'moduleManager', function($rootScope, $http, sidebar, moduleManager) {
 		$rootScope.sidebar = sidebar;
 		$rootScope.$on('$routeChangeSuccess', function(event, route) {
 			if (route.moduleId)
 				moduleManager.setModule(route.moduleId);
 		});
+		$rootScope.logout = function() {
+			$http({
+				method : 'POST',
+				url : 'logout'
+			});
+		};
+		$rootScope.loggedIn = window.loggedIn;
 	}]);
+
+	app.controller('LoginController', ['$http', function($http) {
+		this.login = function(username, passkey) {
+			$http({
+				method : 'POST',
+				url : 'login',
+				data : {
+					username : username,
+					passkey : passkey,
+				},
+			});
+		};
+	}]); 
 
 	app.registerModule = function(module) {
 		app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {

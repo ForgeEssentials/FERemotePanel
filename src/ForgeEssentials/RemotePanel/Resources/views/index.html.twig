@@ -19,9 +19,10 @@
 {% block header_js %}
 	<script>
 		var moduleDependencies = [{% for module in app.modules %}'module/{{ module }}', {% endfor %}];
+		var loggedIn = {{ app.loggedIn ? 'true' : 'false' }};
 	</script>
 	
-{% if true %}
+{% if false %}
     <script type="text/javascript" src="{{ asset('lib/lib.js') }}"></script>
 {% else %}
     <script type="text/javascript" src="{{ asset('lib/jquery/jquery-2.1.4.min.js') }}"></script>
@@ -49,24 +50,37 @@
 <nav id="header" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#header-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" target="_self" href="{{ app.env.baseUrl }}">FE Remote Panel</a></a>
+            <a class="navbar-brand" href="#" target="_self">FE Remote Panel</a></a>
         </div>
-        <div class="collapse navbar-collapse">
+        <div id="header-collapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li ng-cloak ng-repeat="item in sidebar.items | orderObjectBy:'order'" ng-class="{active: item.id == sidebar.selected}" ng-click="sidebar.select(item.id)">
                     <a href="module/{{ angular('item.id') }}" ng-bind="item.label"></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li ng-show="loggedIn">
+                    <a href="logout" target="_self">Logout</a>
+                </li>
+                <li ng-show="!loggedIn">
+                    <a href="#" onclick="$('#auth-popup').modal();">Login</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 <div id="content" class="container-fluid">
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-cloak ng-show="lastError" style="margin-top:20px;">
+        {#<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+        <strong>Error:</strong>
+        <span ng-bind="lastError"></span>
+    </div>
     <!-- START content -->
     {% block content %}
     <div ng-view>{% if content is defined %}{{ content|raw }}{% else %}
@@ -76,6 +90,7 @@
     {% endblock content %}
     <!-- END content -->
 </div>
+{#
 <nav id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
     <div class="container-fluid">
         <div class="collapse navbar-collapse">
@@ -86,4 +101,31 @@
     </div>
 </nav>
 {# #}
+<div id="auth-popup" class="modal fade" role="dialog" ng-controller="LoginController as login">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="login" method="POST" enctype='application/json'>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Authentication required</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please enter your username and passkey (<b>NOT</b> your Minecraft password!)</p>
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input class="form-control" type="text" name="username" id="login-username" ng-model="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-passkey">Passkey</label>
+                        <input class="form-control" type="password" name="passkey" id="login-passkey" ng-model="passkey" placeholder="Passkey">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit" data-loading-text="Loading..." ng-click="login.login(username, passkey)">Login</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
+                </div>
+             </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

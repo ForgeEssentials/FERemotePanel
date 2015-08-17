@@ -79,8 +79,7 @@ define(['app'], function(app) {
 		// angular.extend(module.data, data);
 	};
 
-	module.controller = ['$scope', '$filter',
-	function($scope, $filter) {
+	module.controller = ['$scope', '$filter', function($scope, $filter) {
 		$scope.data = module.data;
 		module.filter = $filter;
 	}];

@@ -94,4 +94,18 @@ abstract class Utils {
 		}
 	}
 
+	public static function getJsonPost() {
+		if ($_SERVER["CONTENT_TYPE"] == 'application/json') {
+			$input = @file_get_contents('php://input');
+			if ($input === false)
+				throw new \Exception("No input");
+			$request = Utils::json_decode_nice($input);
+			if (json_last_error() != 0)
+				throw new \Exception("Error reading post data: " . json_last_error_msg());
+			return $request;
+		} else {
+			return (object)$_POST;
+		}
+	}
+
 }

@@ -17,9 +17,7 @@ class ModuleGraphs extends Module {
 	public function getData() {
 		$data = array();
 		$data['availableStats'] = $this->query('query_stats', null, false, array());
-		$data['stats'] = $this->query('query_stats', $data['availableStats'], false, array());
-		/*foreach ($data['stats'] as $key => &$value)
-			$value = array($value);*/
+		$data['stats'] = $this->query('query_stats', array('graphs' => $data['availableStats']), false, array());
 		return $data;
 	}
 

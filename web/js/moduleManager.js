@@ -1,14 +1,17 @@
 define(['app'], function(app) {
-	var ModuleManager = ['$rootScope', '$http', '$location', 'sidebar', function($rootScope, $http, $location, sidebar) {
+	var ModuleManager = ['$rootScope', '$http', '$location', 'sidebar',
+	function($rootScope, $http, $location, sidebar) {
 		var manager = this;
 		var timer;
 		var activeModule;
+		var openendAuthPopup = false;
 		this.modules = [];
-		
+
 		function startUpdateTimer() {
 			if (activeModule.interval && activeModule.interval > 0)
 				timer = setTimeout(manager.update, activeModule.interval, activeModule);
 		}
+
 
 		manager.add = function(module) {
 			sidebar.add(module);
@@ -24,6 +27,8 @@ define(['app'], function(app) {
 				clearTimeout(timer);
 
 			activeModule = module;
+			// openendAuthPopup = false;
+			$rootScope.lastError = null;
 			sidebar.select(id);
 			manager.update(activeModule);
 			// if (activeModule.interval && activeModule.interval > 0)
@@ -37,13 +42,24 @@ define(['app'], function(app) {
 			$url = $location.absUrl() + '/data';
 			$http.get($url).then(function(response) {
 				startUpdateTimer();
-				
+
 				var data = response.data;
-				if (data.error) {
-					$rootScope.lastError = data.error;
-					return;
+
+				$rootScope.lastError = data.error ? data.error : null;
+				if (data.needsAuthentication) {
+					$rootScope.lastError = 'You need to log in to access all data';
+					if (!openendAuthPopup) {
+						openendAuthPopup = true;
+						app.loginPopup.modal();
+					}
 				}
-				$rootScope.lastError = null;
+
+				if (data.hasOwnProperty('loggedIn'))
+					$rootScope.loggedIn = data.loggedIn;
+
+				if (data.error)
+					return;
+					
 				if (module.update)
 					module.update(data);
 				else
