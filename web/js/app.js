@@ -1,5 +1,5 @@
 define(['n3'], function() {
-	var app = angular.module('app', ['ngRoute', 'n3-line-chart', 'chart.js']);
+	var app = angular.module('app', ['ngRoute', 'n3-line-chart']);
 
 	//------------------------------------------------------------
 	

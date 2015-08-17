@@ -2,21 +2,16 @@
 
 {% block title 'ForgeEssentials Remote Panel' %}
 
-{# ######################################################### #}
-
 {% block head %}
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=device-dpi, user-scalable=0">
 	<base href="{{ app.env.basePath }}/">
 {% endblock %}
 
-{# ######################################################### #}
-
 {% block stylesheets %}
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="{{ asset('css/layout.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
-	<link rel="stylesheet" href="{{ asset('lib/angular-chart/angular-chart.css') }}">
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/style.css">
 {% endblock %}
 
 {# ######################################################### #}
@@ -26,11 +21,15 @@
 		var moduleDependencies = [{% for module in app.modules %}'module/{{ module }}', {% endfor %}];
 	</script>
 	
-	<script type="text/javascript" src="{{ asset('lib/jquery/jquery-2.1.4.min.js') }}"></script>
+{% if true %}
+    <script type="text/javascript" src="{{ asset('lib/lib.js') }}"></script>
+{% else %}
+    <script type="text/javascript" src="{{ asset('lib/jquery/jquery-2.1.4.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('lib/bootstrap/js/bootstrap.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('lib/angular/angular.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('lib/angular/angular-route.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('lib/require.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('lib/angular/angular.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('lib/angular/angular-route.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('lib/require.js') }}"></script>
+{% endif %}
 	<script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
 {% endblock %}
 
@@ -47,8 +46,7 @@
 {# ######################################################### #}
 
 {% block body %}
-{# #}
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav id="header" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
@@ -59,7 +57,7 @@
             </button>
             <a class="navbar-brand" target="_self" href="{{ app.env.baseUrl }}">FE Remote Panel</a></a>
         </div>
-        <div class="collapse navbar-collapse" id="navbar">
+        <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li ng-cloak ng-repeat="item in sidebar.items | orderObjectBy:'order'" ng-class="{active: item.id == sidebar.selected}" ng-click="sidebar.select(item.id)">
                     <a href="module/{{ angular('item.id') }}" ng-bind="item.label"></a>
@@ -78,43 +76,14 @@
     {% endblock content %}
     <!-- END content -->
 </div>
-<nav class="navbar navbar-inverse navbar-fixed-bottom">
+<nav id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
     <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="navbar">
+        <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a ng-bind="lastError" style="color:#d11;"></a></li>
             </ul>
         </div>
     </div>
 </nav>
-{# #}
-{#
-<div class="nav-bar" id="header">
-    <!-- START header -->
-	{% block header %}{% include "header.html.twig" %}{% endblock %}
-    <!-- END header -->
-</div>
-<div id="wrapper">
-	<div id="sidebar">
-		<!-- START sidebar -->
-		{% block sidebar %}{% include "sidebar.html.twig" %}{% endblock %}
-		<!-- END sidebar -->
-	</div>
-	<div id="content">
-		<!-- START content -->
-		{% block content %}
-		<div ng-view>{% if content is defined %}{{ content|raw }}{% else %}
-			<h1>Loading</h1>
-			<p>If no content appears, please be sure that JavaScript is enabled in your browser.</p>
-		{% endif%}</div>
-		{% endblock content %}
-		<!-- END content -->
-	</div>
-</div>
-<div class="nav-bar" id="footer">
-	<!-- START footer -->
-	{% block footer %}{% include "footer.html.twig" %}{% endblock %}
-	<!-- END footer -->
-</div>
 {# #}
 {% endblock %}
