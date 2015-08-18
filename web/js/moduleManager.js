@@ -10,8 +10,20 @@ define(['app'], function(app) {
 		function startUpdateTimer() {
 			if (activeModule.interval && activeModule.interval > 0)
 				timer = setTimeout(manager.update, activeModule.interval, activeModule);
-		}
+		};
 
+		function handleResponse(data) {
+			$rootScope.lastError = (data.error && data.error != 'no permission') ? data.error : null;
+			if (data.needsAuthentication) {
+				$rootScope.needsAuthentication = true;
+				if (!openendAuthPopup) {
+					openendAuthPopup = true;
+					app.loginPopup.modal();
+				}
+			}
+			if (data.hasOwnProperty('loggedIn'))
+				$rootScope.loggedIn = data.loggedIn;
+		};
 
 		manager.add = function(module) {
 			sidebar.add(module);
@@ -27,7 +39,7 @@ define(['app'], function(app) {
 				clearTimeout(timer);
 
 			activeModule = module;
-			// openendAuthPopup = false;
+			$rootScope.needsAuthentication = false;
 			$rootScope.lastError = null;
 			sidebar.select(id);
 			manager.update(activeModule);
@@ -35,42 +47,60 @@ define(['app'], function(app) {
 			//	timer = setTimeout(manager.update, activeModule.interval, activeModule);
 		};
 
+		manager.request = function(request, successCallback, errorCallback) {
+			$http(request).then(function(response) {
+				handleResponse(response.data);
+				if (response.data.error) {
+					if (errorCallback)
+						errorCallback(response.data.error);
+				} else {
+					if (successCallback)
+						successCallback(response.data);
+				}
+			}, function(response) {
+				$rootScope.lastError = response.statusText;
+				if (errorCallback)
+					errorCallback(response.statusText);
+			});
+		};
+
+		manager.get = function(url, data, successCallback, errorCallback) {
+			manager.request({
+				url : url,
+				data : data,
+			}, successCallback, errorCallback);
+		};
+
+		manager.post = function(url, data, successCallback, errorCallback) {
+			manager.request({
+				method : 'POST',
+				url : url,
+				data : data,
+			}, successCallback, errorCallback);
+		};
+
 		manager.update = function(module) {
 			if (!module.interval || module.interval <= 0)
 				return;
-			// TODO: Change to use base URL + module.id instead
-			$url = $location.absUrl() + '/data';
-			$http.get($url).then(function(response) {
+			var url = 'module/' + module.id + '/data';
+			var data = {
+				t : module.lastTimestamp
+			};
+			manager.get(url, data, function(data) {
 				startUpdateTimer();
-
-				var data = response.data;
-
-				$rootScope.lastError = data.error ? data.error : null;
-				if (data.needsAuthentication) {
-					$rootScope.lastError = 'You need to log in to access all data';
-					if (!openendAuthPopup) {
-						openendAuthPopup = true;
-						app.loginPopup.modal();
-					}
-				}
-
-				if (data.hasOwnProperty('loggedIn'))
-					$rootScope.loggedIn = data.loggedIn;
-
-				if (data.error)
-					return;
-					
+				module.lastTimestamp = data.timestamp;
 				if (module.update)
 					module.update(data);
 				else
 					angular.extend(module.data, data);
-			}, function(response) {
+			}, function(error) {
 				startUpdateTimer();
-				$rootScope.lastError = response.statusText;
 			});
 		};
 
 	}];
+
 	app.service('moduleManager', ModuleManager);
+
 	return ModuleManager;
 });

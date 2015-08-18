@@ -1,30 +1,32 @@
 {% verbatim %}<h1>Dashboard</h1>
 
 <h2>Players - <span ng-bind="data.players.length|ifUndefined:0">0</span></h2>
-<table class="table table-condensed" style="max-width:600px;">
-    <thead>
-        <th>Name</th>
-        <th>X</th>
-        <th>Y</th>
-        <th>Z</th>
-        <th>DIM</th>
-        <th>Health</th>
-        <th>Armor</th>
-        <th>Hunger</th>
-        <th>Saturation</th>
-    </thead>
-    <tr ng-cloak ng-repeat="player in data.players | orderBy: 'name'">
-        <td ng-bind="player.name | ifUndefined:'N/A'">-</td>
-        <td ng-bind="player.location.x | number:1 | ifUndefined:'-'">0</td>
-        <td ng-bind="player.location.y | number:1 | ifUndefined:'-'">0</td>
-        <td ng-bind="player.location.z | number:1 | ifUndefined:'-'">0</td>
-        <td ng-bind="player.location.dim | ifUndefined:'-'">0</td>
-        <td ng-bind="player.health | ifUndefined:'-'">0</td>
-        <td ng-bind="player.armor | ifUndefined:'-'">0</td>
-        <td ng-bind="player.hunger | ifUndefined:'-'">0</td>
-        <td ng-bind="player.saturation | ifUndefined:'-'">0</td>
-    </tr>
-</table>
+<div class="table-responsive">
+    <table class="table table-condensed" style="max-width:600px;">
+        <thead>
+            <th>Name</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+            <th>DIM</th>
+            <th>Health</th>
+            <th>Armor</th>
+            <th>Hunger</th>
+            <th>Saturation</th>
+        </thead>
+        <tr ng-cloak ng-repeat="player in data.players | orderBy: 'name'">
+            <td ng-bind="player.name | ifUndefined:'N/A'">-</td>
+            <td ng-bind="player.location.x | number:1 | ifUndefined:'-'">0</td>
+            <td ng-bind="player.location.y | number:1 | ifUndefined:'-'">0</td>
+            <td ng-bind="player.location.z | number:1 | ifUndefined:'-'">0</td>
+            <td ng-bind="player.location.dim | ifUndefined:'-'">0</td>
+            <td ng-bind="player.health | ifUndefined:'-'">0</td>
+            <td ng-bind="player.armor | ifUndefined:'-'">0</td>
+            <td ng-bind="player.hunger | ifUndefined:'-'">0</td>
+            <td ng-bind="player.saturation | ifUndefined:'-'">0</td>
+        </tr>
+    </table>
+</div>
 
 <h2>Remote Capabilities</h2>
 <p ng-bind="data.capabilities | join">

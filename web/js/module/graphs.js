@@ -5,7 +5,7 @@ define(['app'], function(app) {
 
 	var module = {
 		id : 'graphs',
-		order : 1,
+		order : 20,
 		label : 'Graphs',
 		interval : 5000
 	};

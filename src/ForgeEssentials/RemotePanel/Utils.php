@@ -11,6 +11,7 @@ abstract class Utils {
 			'basePath' => isset($_SERVER['BASE']) ? $_SERVER['BASE'] : (isset($_SERVER['REDIRECT_BASE']) ? $_SERVER['REDIRECT_BASE'] : dirname($_SERVER['SCRIPT_NAME'])),
 			'baseUrl' => (isset($_SERVER['BASE']) || isset($_SERVER['REDIRECT_BASE'])) && basename($_SERVER['SCRIPT_NAME']) == 'app.php' ? BASE_PATH : $_SERVER['SCRIPT_NAME'],
 			'path' => isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : substr($_SERVER['REQUEST_URI'], strlen(BASE_URL)),
+			'method' => $_SERVER['REQUEST_METHOD'],
 		);
 	}
 
@@ -94,8 +95,8 @@ abstract class Utils {
 		}
 	}
 
-	public static function getJsonPost() {
-		if ($_SERVER["CONTENT_TYPE"] == 'application/json') {
+	public static function getJsonRequest() {
+		if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
 			$input = @file_get_contents('php://input');
 			if ($input === false)
 				throw new \Exception("No input");
@@ -104,7 +105,7 @@ abstract class Utils {
 				throw new \Exception("Error reading post data: " . json_last_error_msg());
 			return $request;
 		} else {
-			return (object)$_POST;
+			return (object)$_REQUEST;
 		}
 	}
 

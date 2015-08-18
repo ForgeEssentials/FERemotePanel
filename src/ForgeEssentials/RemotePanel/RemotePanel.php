@@ -120,7 +120,7 @@ class RemotePanel {
 			$this->passkey = $_SESSION['passkey'] = $request->passkey;
 			echo json_encode(array('success' => true));
 		} catch (\Exception $e) {
-			echo json_encode(array('error' => $e->getMessage()));
+			echo json_encode(RemotePanel::error($e->getMessage()));
 		}
 	}
 
@@ -137,58 +137,65 @@ class RemotePanel {
 	public function getModules() {
 		return array(
 			'dashboard',
-			'graphs',
+			'chat',
 			'serverlog',
+			'graphs',
 		);
 	}
 
 	public function handleModuleData($name) {
 		header('Content-Type: application/json');
 		try {
-
 			$module = $this->getModule($name);
-			if ($module === false) {
-				echo json_encode(array('error' => 'This module does not exist'));
-				return;
+			if ($this->env->method == 'POST') {
+				$request = Utils::getJsonRequest();
+				$data = $module->postData($request);
+			} else {
+				if (isset($_REQUEST['t']))
+					$this->remoteTimestamp = intval($_REQUEST['t']);
+				$data = $module->getData();
 			}
-
-			$data = $module->getData();
-			if ($data === false) {
-				echo json_encode(array('error' => 'Unable to retrieve module data'));
-				return;
-			}
+			if ($data === false)
+				$data = array('error' => 'Unable to retrieve module data');
+			if (!$data || $data === true)
+				$data = array('success' => true);
+			if (!is_array($data))
+				throw new \Exception('Invalid data returned');
 		} catch (\Exception $e) {
 			$data = array('error' => $e->getMessage());
 		}
 		$data['needsAuthentication'] = $this->needsAuthentication;
 		$data['loggedIn'] = $this->loggedIn;
-		$data['timestamp'] = $this->remoteTimestamp;
+		$data['timestamp'] = isset($_SESSION['timestamp']) ? $_SESSION['timestamp'] : 0;
 		echo json_encode($data);
 	}
 
 	public function handleModuleView($name) {
-		$module = $this->getModule($name);
-		if ($module === false) {
-			echo "This module does not exist";
-			return;
+		try {
+			$module = $this->getModule($name);
+			echo $module->render($this->getTwig());
+		} catch (\Exception $e) {
+			echo $e->getMessage();
 		}
-		echo $module->render($this->getTwig());
 	}
 
 	public function handleModule($name) {
-		$module = $this->getModule($name);
-		if ($module === false) {
-			$this->renderError("This module does not exist");
-			return;
+		try {
+			unset($_SESSION['timestamp']);
+			$module = $this->getModule($name);
+			echo $this->getTwig()->render('index.html.twig', array('content' => $module->render($this->getTwig())));
+		} catch (\Exception $e) {
+			$this->renderError($e->getMessage());
 		}
-		echo $this->getTwig()->render('index.html.twig', array('content' => $module->render($this->getTwig())));
 	}
 
 	public function render() {
+		unset($_SESSION['timestamp']);
 		echo $this->getTwig()->render('index.html.twig');
 	}
 
 	public function renderError($message) {
+		unset($_SESSION['timestamp']);
 		echo $this->getTwig()->render('error.html.twig', array('error' => $message));
 	}
 
@@ -202,10 +209,10 @@ class RemotePanel {
 	public function getModule($name) {
 		if (!isset($this->modules[$name])) {
 			if (!in_array($name, $this->getModules()))
-				return false;
+				throw new \Exception('Unknown module');
 			$class = '\\ForgeEssentials\\RemotePanel\\Module\\Module' . ucfirst($name);
 			if (!class_exists($class))
-				return false;
+				throw new \Exception('Module class not found');
 			$module = @new $class($this);
 			$this->modules[$name] = $module;
 		}
@@ -230,7 +237,10 @@ class RemotePanel {
 		if (!empty($responseObj->success)) {
 			if (isset($responseObj->timestamp))
 				$_SESSION['timestamp'] = $responseObj->timestamp;
-			return $responseObj->data;
+			if (isset($responseObj->data))
+				return $responseObj->data;
+			else
+				return array();
 		}
 
 		$error = !empty($responseObj->message) ? $responseObj->message : 'error';
@@ -250,6 +260,10 @@ class RemotePanel {
 
 	public function query($id, $data = null, $assoc = false, $defaultValue = null) {
 		return $this->handleRemoteResponse($this->getRemoteClient()->query($id, $data, $assoc, false), $defaultValue);
+	}
+
+	public function post($id, $data = null) {
+		$this->getRemoteClient()->sendRequest($id, $data);
 	}
 
 	public function getTimestamp() {
@@ -285,5 +299,9 @@ class RemotePanel {
 	}
 
 	/************************************************************/
+
+	public static function error($message) {
+		return array('error' => $message);
+	}
 
 }

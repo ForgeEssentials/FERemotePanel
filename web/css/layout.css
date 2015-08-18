@@ -39,10 +39,10 @@ body {
 
 #content {
 	position: absolute;
+	top: 50px;
 	left: 0;
 	right: 0;
-	top: 50px;
-	bottom: 50px;
+	bottom: 0;
 	overflow-y: auto;
 }
 
@@ -61,13 +61,19 @@ body {
 
 /************************/
 
-textarea.log {
+textarea.log,
+div.log {
 	max-width: 100%;
 	min-width: 100%;
 	border-radius: 8px;
 	padding: 4px;
 	font-family: "Courier New", Courier, monospace;
 	font-size: 12px;
+	cursor: text;
+}
+
+div.log {
+	overflow: auto;
 }
 
 .graph-box {

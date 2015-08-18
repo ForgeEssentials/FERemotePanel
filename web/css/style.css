@@ -32,7 +32,12 @@ a {
 
 textarea.log {
 	background: black;
-	color: #090;
+	color: #009900;
+}
+
+div.log {
+	background: black;
+	color: #FFFFFF;
 }
 
 /************************/

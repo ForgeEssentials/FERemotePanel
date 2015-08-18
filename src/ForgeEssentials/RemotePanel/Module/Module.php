@@ -23,12 +23,19 @@ abstract class Module {
 
 	public abstract function getData();
 
+	public function postData($data) {
+	}
+
 	public function render(Twig_Environment $twig) {
 		return $this->panel->getTwig()->render('module/' . $this->getId() . '.html.twig', array('module' => $this));
 	}
 
 	public function query($id, $data = null, $assoc = false, $defaultValue = null) {
 		return $this->panel->query($id, $data, $assoc, $defaultValue);
+	}
+
+	public function post($id, $data = null) {
+		return $this->panel->post($id, $data);
 	}
 
 }

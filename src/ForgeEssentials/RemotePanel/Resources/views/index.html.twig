@@ -11,7 +11,8 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/layout.css">
-	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/McChat.css">
 {% endblock %}
 
 {# ######################################################### #}
@@ -65,7 +66,7 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-show="loggedIn">
+                <li ng-cloak ng-show="loggedIn">
                     <a href="logout" target="_self">Logout</a>
                 </li>
                 <li ng-show="!loggedIn">
@@ -76,10 +77,13 @@
     </div>
 </nav>
 <div id="content" class="container-fluid">
-    <div class="alert alert-danger alert-dismissible" role="alert" ng-cloak ng-show="lastError" style="margin-top:20px;">
-        {#<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+    <div class="alert alert-danger" role="alert" ng-cloak ng-show="lastError" style="margin-top:20px;">
         <strong>Error:</strong>
         <span ng-bind="lastError"></span>
+    </div>
+    <div class="alert alert-danger" role="alert" ng-cloak ng-show="needsAuthentication" style="margin-top:20px;">
+        <strong>Error:</strong>
+        <span>You need to log in to access all data</span>
     </div>
     <!-- START content -->
     {% block content %}
