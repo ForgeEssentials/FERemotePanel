@@ -90,17 +90,17 @@ class RemotePanel {
 	/************************************************************/
 
 	public function run() {
-		if (preg_match("@^/module/([^/]+)/data/?$@", $this->env->path, $matches)) {
+		if (preg_match("@^/module/([^/]+)/data/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleModuleData($matches[1]);
-		} else if (preg_match("@^/module/([^/]+)/view/?$@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/]+)/view/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleModuleView($matches[1]);
-		} else if (preg_match("@^/module/([^/]+)/?$@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/]+)/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleModule($matches[1]);
-		} else if (preg_match("@^/login/?$@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/login/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleLogin();
-		} else if (preg_match("@^/logout/?$@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/logout/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleLogout();
-		} else if (preg_match("@^/?$@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/?(?:\\?|$)@", $this->env->path, $matches)) {
 			$this->handleModule($this->getModules()[0]);
 		} else {
 			Utils::setHeaderStatus(404);
@@ -112,7 +112,7 @@ class RemotePanel {
 		header('Content-Type: application/json');
 		header("Location: " . $this->env->baseUrl);
 		try {
-			$request = Utils::getJsonPost();
+			$request = Utils::getJsonRequest();
 			if (!isset($request->username) || !isset($request->passkey))
 				throw new \Exception('Username and passkey required');
 
@@ -152,7 +152,7 @@ class RemotePanel {
 				$data = $module->postData($request);
 			} else {
 				if (isset($_REQUEST['t']))
-					$this->remoteTimestamp = intval($_REQUEST['t']);
+					$this->remoteTimestamp = Utils::bigintval($_REQUEST['t']);
 				$data = $module->getData();
 			}
 			if ($data === false)
@@ -167,6 +167,7 @@ class RemotePanel {
 		$data['needsAuthentication'] = $this->needsAuthentication;
 		$data['loggedIn'] = $this->loggedIn;
 		$data['timestamp'] = isset($_SESSION['timestamp']) ? $_SESSION['timestamp'] : 0;
+		$data['requestedTimestamp'] = $this->remoteTimestamp;
 		echo json_encode($data);
 	}
 

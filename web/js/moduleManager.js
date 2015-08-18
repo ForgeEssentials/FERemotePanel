@@ -67,7 +67,7 @@ define(['app'], function(app) {
 		manager.get = function(url, data, successCallback, errorCallback) {
 			manager.request({
 				url : url,
-				data : data,
+				params : data,
 			}, successCallback, errorCallback);
 		};
 

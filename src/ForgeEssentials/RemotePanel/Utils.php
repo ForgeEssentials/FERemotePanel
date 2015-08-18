@@ -109,4 +109,9 @@ abstract class Utils {
 		}
 	}
 
+	public static function bigintval($value) {
+		ctype_digit($value);
+		return $value;
+	}
+
 }
