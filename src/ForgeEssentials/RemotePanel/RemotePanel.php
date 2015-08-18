@@ -28,6 +28,8 @@ class RemotePanel {
 
 	private $remoteTimestamp = 0;
 
+	private $newRemoteTimestamp = 0;
+
 	/**
 	 * @var Client
 	 */
@@ -83,24 +85,22 @@ class RemotePanel {
 		}
 		if (!empty($_SESSION['passkey']))
 			$this->passkey = $_SESSION['passkey'];
-		if (!empty($_SESSION['timestamp']))
-			$this->remoteTimestamp = $_SESSION['timestamp'];
 	}
 
 	/************************************************************/
 
 	public function run() {
-		if (preg_match("@^/module/([^/]+)/data/?(?:\\?|$)@", $this->env->path, $matches)) {
+		if (preg_match("@^/module/([^/\\?]+)/data/?@", $this->env->path, $matches)) {
 			$this->handleModuleData($matches[1]);
-		} else if (preg_match("@^/module/([^/]+)/view/?(?:\\?|$)@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/\\?]+)/view/?@", $this->env->path, $matches)) {
 			$this->handleModuleView($matches[1]);
-		} else if (preg_match("@^/module/([^/]+)/?(?:\\?|$)@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/\\?]+)/?@", $this->env->path, $matches)) {
 			$this->handleModule($matches[1]);
-		} else if (preg_match("@^/login/?(?:\\?|$)@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/login/?@", $this->env->path, $matches)) {
 			$this->handleLogin();
-		} else if (preg_match("@^/logout/?(?:\\?|$)@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/logout/?@", $this->env->path, $matches)) {
 			$this->handleLogout();
-		} else if (preg_match("@^/?(?:\\?|$)@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/?@", $this->env->path, $matches)) {
 			$this->handleModule($this->getModules()[0]);
 		} else {
 			Utils::setHeaderStatus(404);
@@ -110,7 +110,7 @@ class RemotePanel {
 
 	public function handleLogin() {
 		header('Content-Type: application/json');
-		header("Location: " . $this->env->baseUrl);
+		header("Location: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $this->env->baseUrl));
 		try {
 			$request = Utils::getJsonRequest();
 			if (!isset($request->username) || !isset($request->passkey))
@@ -126,7 +126,7 @@ class RemotePanel {
 
 	public function handleLogout() {
 		header('Content-Type: application/json');
-		header("Location: " . $this->env->baseUrl);
+		header("Location: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $this->env->baseUrl));
 		$this->username = $_SESSION['username'] = null;
 		$this->passkey = $_SESSION['passkey'] = null;
 		echo json_encode(array('success' => true));
@@ -152,7 +152,7 @@ class RemotePanel {
 				$data = $module->postData($request);
 			} else {
 				if (isset($_REQUEST['t']))
-					$this->remoteTimestamp = Utils::bigintval($_REQUEST['t']);
+					$this->newRemoteTimestamp = $this->remoteTimestamp = Utils::bigintval($_REQUEST['t']);
 				$data = $module->getData();
 			}
 			if ($data === false)
@@ -166,8 +166,7 @@ class RemotePanel {
 		}
 		$data['needsAuthentication'] = $this->needsAuthentication;
 		$data['loggedIn'] = $this->loggedIn;
-		$data['timestamp'] = isset($_SESSION['timestamp']) ? $_SESSION['timestamp'] : 0;
-		$data['requestedTimestamp'] = $this->remoteTimestamp;
+		$data['timestamp'] = $this->newRemoteTimestamp;
 		echo json_encode($data);
 	}
 
@@ -182,7 +181,6 @@ class RemotePanel {
 
 	public function handleModule($name) {
 		try {
-			unset($_SESSION['timestamp']);
 			$module = $this->getModule($name);
 			echo $this->getTwig()->render('index.html.twig', array('content' => $module->render($this->getTwig())));
 		} catch (\Exception $e) {
@@ -191,12 +189,10 @@ class RemotePanel {
 	}
 
 	public function render() {
-		unset($_SESSION['timestamp']);
 		echo $this->getTwig()->render('index.html.twig');
 	}
 
 	public function renderError($message) {
-		unset($_SESSION['timestamp']);
 		echo $this->getTwig()->render('error.html.twig', array('error' => $message));
 	}
 
@@ -223,7 +219,7 @@ class RemotePanel {
 	/************************************************************/
 
 	/**
-	 * @return Client
+	 * @return \ForgeEssentials\Remote\Client
 	 */
 	public function getRemoteClient() {
 		if (empty($this->remote)) {
@@ -233,11 +229,11 @@ class RemotePanel {
 		return $this->remote;
 	}
 
-	protected function handleRemoteResponse($response, $defaultValue = null) {
+	public function handleRemoteResponse($response, $defaultValue = null) {
 		$responseObj = (object)$response;
 		if (!empty($responseObj->success)) {
 			if (isset($responseObj->timestamp))
-				$_SESSION['timestamp'] = $responseObj->timestamp;
+				$this->newRemoteTimestamp = $responseObj->timestamp;
 			if (isset($responseObj->data))
 				return $responseObj->data;
 			else

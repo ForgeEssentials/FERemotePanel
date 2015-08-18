@@ -21,7 +21,16 @@ define(['app'], function(app) {
 		this.sendMessage = function(msg) {
 			moduleManager.post('module/chat/data', {
 				message : msg,
+			}, function(data) {
+				if (data.messages) {
+					angular.merge(module.data.chat, data.messages);
+					module.data.chatlines = '';
+					forEachSorted(module.data.chat, function(e) {
+						module.data.chatlines += e + '<br>';
+					});
+				}
 			});
+			moduleManager.forceUpdate();
 		};
 	}];
 

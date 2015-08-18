@@ -79,6 +79,12 @@ define(['app'], function(app) {
 			}, successCallback, errorCallback);
 		};
 
+		manager.forceUpdate = function() {
+			clearTimeout(timer);
+			if (activeModule.interval && activeModule.interval > 0)
+				timer = setTimeout(manager.update, 50, activeModule);
+		};
+
 		manager.update = function(module) {
 			if (!module.interval || module.interval <= 0)
 				return;
