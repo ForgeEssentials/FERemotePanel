@@ -25,6 +25,7 @@ if no further configuration is performed.
 
 To create a virtual user, simply run the command `/remote setkey <username> <passkey>`.
 It is recommended to use a username with characters in it, that are normally not allowed in usernames (for example `$remote`).
+
 After that you can simply configure the permissions of that virtual user with `/p user <username>`.
 By default this user will be in the `_GUESTS_` group like a normaly player and will be able to access the same features as other guests via remote.
 This is why it is recommended to configure some permissions first (see [Permissions](#permissions)).
