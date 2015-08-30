@@ -5,9 +5,10 @@ Web panel for ForgeEssential powered servers using FERemote API
 ## Installation
 
  1. Clone source
- 2. Run `composer install` (Get composer from https://getcomposer.org/download/)
- 3. Set the `web` directory as document root
- 4. (Optionally) Configure settings via `config/config.json`
+ 2. Make sure the `var` directory is writable by the webserver
+ 3. Run `composer install` (Get composer from https://getcomposer.org/download/)
+ 4. Set the `web` directory as document root
+ 5. (Optionally) Configure settings via `config/config.json`
 
 ## Configuration (config.json)
 
