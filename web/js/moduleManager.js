@@ -37,6 +37,8 @@ define(['app'], function(app) {
 
 			if (activeModule)
 				clearTimeout(timer);
+				
+			$('#header-collapse').collapse('hide');
 
 			activeModule = module;
 			$rootScope.needsAuthentication = false;

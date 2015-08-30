@@ -10,7 +10,7 @@
 	"repositories": [
 		{
 			"type": "vcs",
-			"url": "https://github.com/ForgeEssentials/PHPRemoteLib"
+			"url": "https://github.com/ForgeEssentials/FERemotePHP"
 		}
 	],
 	"require": {

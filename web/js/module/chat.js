@@ -1,7 +1,5 @@
 define(['app'], function(app) {
 
-	var lastTimestamp;
-
 	var module = {
 		id : 'chat',
 		order : 1,
@@ -17,7 +15,6 @@ define(['app'], function(app) {
 	function($scope, moduleManager) {
 		$scope.data = module.data;
 		module.scope = $scope;
-		lastTimestamp = null;
 		this.sendMessage = function(msg) {
 			moduleManager.post('module/chat/data', {
 				message : msg,

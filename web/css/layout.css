@@ -28,6 +28,16 @@ body {
 	padding-top: 50px;
 }
 
+.container-fluid {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.alert {
+	position: relative;
+	z-index: 100;
+}
+
 /************************/
 
 .navbar h1 {
@@ -61,8 +71,17 @@ body {
 
 /************************/
 
-textarea.log,
-div.log {
+.cover {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/************************/
+
+textarea.log, div.log {
 	max-width: 100%;
 	min-width: 100%;
 	border-radius: 8px;
@@ -70,10 +89,17 @@ div.log {
 	font-family: "Courier New", Courier, monospace;
 	font-size: 12px;
 	cursor: text;
+	white-space: pre;
 }
 
 div.log {
 	overflow: auto;
+}
+
+@media (max-width: 400px) {
+	#serverlog {
+		font-size: 0.5em;
+	}
 }
 
 .graph-box {

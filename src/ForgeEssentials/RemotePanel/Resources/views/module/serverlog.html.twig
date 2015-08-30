@@ -1,2 +1,13 @@
-<h1>Server Logs</h1>
-<textarea id="serverlog" class="log" readonly="readonly" style="height:600px;" ng-model="data.log" ng-list="&#10;"></textarea>
+<div class="cover">
+    <div class="container-fluid cover" style="bottom:45px; top:10px;">
+        <textarea id="serverlog" class="log" readonly="readonly" style="height:100%;" ng-model="data.log" ng-list="&#10;"></textarea>
+    </div>
+    <form class="container-fluid cover" style="top:auto; height:40px;" ng-submit="module.sendCommand(input);input=null;">
+        <div class="input-group">
+            <input class="form-control" type="text" name="input" id="chat-input" ng-model="input" autocomplete="off" placeholder="Command (without slash)">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Send</button>
+            </span>
+        </div>
+    </form>
+</div>

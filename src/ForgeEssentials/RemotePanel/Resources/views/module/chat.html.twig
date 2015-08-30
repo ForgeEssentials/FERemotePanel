@@ -1,10 +1,13 @@
-<h1>Chat</h1>
-<div class="form-group">
-    <div class="form-control log" id="chatlog" style="height:400px;" ng-bind-html="data.chatlines | unsafe"></div>
+<div class="cover">
+    <div class="container-fluid cover" style="bottom:45px; top:10px;">
+        <div class="form-control log" id="chatlog" style="height:100%;" ng-bind-html="data.chatlines | unsafe"></div>
+    </div>
+    <form class="container-fluid cover" style="top:auto; height:40px;" ng-submit="module.sendMessage(input);input=null;">
+        <div class="input-group">
+            <input class="form-control" type="text" name="input" id="chat-input" ng-model="input" autocomplete="off" placeholder="Chat message or command">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Send</button>
+            </span>
+        </div>
+    </form>
 </div>
-<form class="input-group" ng-submit="module.sendMessage(input);input=null;">
-    <input class="form-control" type="text" name="input" id="chat-input" ng-model="input" autocomplete="off" placeholder="Chat message or command">
-    <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">Send</button>
-    </span>
-</form>

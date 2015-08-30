@@ -90,21 +90,22 @@ class RemotePanel {
 	/************************************************************/
 
 	public function run() {
-		if (preg_match("@^/module/([^/\\?]+)/data/?@", $this->env->path, $matches)) {
+		if (preg_match("@^/module/([^/\\?]+)/data/?$@", $this->env->path, $matches)) {
 			$this->handleModuleData($matches[1]);
-		} else if (preg_match("@^/module/([^/\\?]+)/view/?@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/\\?]+)/view/?$@", $this->env->path, $matches)) {
 			$this->handleModuleView($matches[1]);
-		} else if (preg_match("@^/module/([^/\\?]+)/?@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/module/([^/\\?]+)/?$@", $this->env->path, $matches)) {
 			$this->handleModule($matches[1]);
-		} else if (preg_match("@^/login/?@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/login/?$@", $this->env->path, $matches)) {
 			$this->handleLogin();
-		} else if (preg_match("@^/logout/?@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/logout/?$@", $this->env->path, $matches)) {
 			$this->handleLogout();
-		} else if (preg_match("@^/?@", $this->env->path, $matches)) {
+		} else if (preg_match("@^/?$@", $this->env->path, $matches)) {
 			$this->handleModule($this->getModules()[0]);
 		} else {
 			Utils::setHeaderStatus(404);
-			echo "404 - Not found";
+			$this->renderError("404 - Not found");
+			//echo "404 - Not found";
 		}
 	}
 
