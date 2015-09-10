@@ -1,7 +1,7 @@
 {% verbatim %}
 <ul class="treeview">
-    <li class="glyphicon glyphicon-menu-down">
-        <a>ROOT</a>
+    <li class="active">
+        <a href="#" ng-click="module.refresh()">ROOT (click to refresh)</a>
         <ul ng-cloak>
             
             <!-- ROOT PERMS -->
@@ -9,20 +9,18 @@
             <li x-player-perms="data.root"></li>
             
             <!-- WORLDS -->
-            <li ng-repeat="world in data.root.worldZones | orderBy: 'id'"
-                    class="glyphicon" ng-class="data.worldZone == world ? 'glyphicon-menu-down' : 'glyphicon-menu-right'">
-                <a href="#" ng-click="module.selectWorld(world)">WORLD_{{ world.dimensionID }}</a>
-                <ul ng-show="data.worldZone == world">
+            <li class="node" ng-repeat="world in data.root.worldZones | orderBy: 'id'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
+                <a href="#" ng-click="nodeExpanded = !nodeExpanded">WORLD_{{ world.dimensionID }}</a>
+                <ul>
                     
                     <!-- WORLD PERMS -->
                     <li x-group-perms="world"></li>
                     <li x-player-perms="world"></li>
                     
                     <!-- AREAS -->
-                    <li ng-repeat="area in world.areaZones | orderBy: 'name'"
-                            class="glyphicon" ng-class="data.zone == area ? 'glyphicon-menu-down' : 'glyphicon-menu-right'">
-                        <a href="#" ng-click="module.selectArea(area)" ng-bind="area.name"></a>
-                        <ul ng-show="data.zone == area">
+                    <li class="node" ng-repeat="area in world.areaZones | orderBy: 'name'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
+                        <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="area.name"></a>
+                        <ul>
                             <!-- AREA PERMS -->
                             <li x-group-perms="area"></li>
                             <li x-player-perms="area"></li>
@@ -33,4 +31,30 @@
         </ul>
     </li>
 </ul>
+<div id="perm-popup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="module.submit();">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit permission</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="permission-key">Permission</label>
+                        <input class="form-control" type="text" name="key" id="permission-key" ng-model="tmp.key" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="permission-value">Passkey</label>
+                        <input class="form-control" type="text" name="value" id="permission-value" ng-model="tmp.value" placeholder="Passkey">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit" data-dismiss="modal" data-loading-text="Loading..." ng-click="module.submit();">Login</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endverbatim %}

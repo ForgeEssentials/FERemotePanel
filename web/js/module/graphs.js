@@ -7,7 +7,8 @@ define(['app'], function(app) {
 		id : 'graphs',
 		order : 20,
 		label : 'Graphs',
-		interval : 5000
+		interval : 5000,
+		neededCapabilities : ['query_stats'],
 	};
 
 	function Graph(label, type, color, unit) {

@@ -5,6 +5,7 @@ define(['app'], function(app) {
 		order : 0,
 		label : 'Dashboard',
 		interval : 1000,
+		neededCapabilities : ['query_player'],
 		data : {
 			players : {},
 			capabilities : ['Loading... Please wait'],

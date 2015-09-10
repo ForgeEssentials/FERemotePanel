@@ -5,6 +5,7 @@ define(['app'], function(app) {
 		order : 1,
 		label : 'Chat',
 		interval : 1000,
+		neededCapabilities : ['query_chat'],
 		data : {
 			chat : {},
 			chatlines : 'Loading... Please wait',

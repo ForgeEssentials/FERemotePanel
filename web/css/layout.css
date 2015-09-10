@@ -45,7 +45,7 @@ body {
 	padding-left: 0;
 }
 .treeview ul {
-	margin-left: 23px;
+	margin-left: 10px;
 	list-style: outside none none;
 	padding-left: 0;
 	margin-top: 5px;
@@ -62,6 +62,20 @@ li.glyphicon > * {
 }
 li.glyphicon::before {
 	margin-right: -5px;
+}
+
+.treeview li > ul {
+	display: none;
+}
+.treeview li.active > ul {
+	display: block;
+}
+.treeview li.node:before {
+	font-family: "Glyphicons Halflings";
+	content: "\e258";
+}
+.treeview li.node.active:before {
+	content: "\e259";
 }
 
 /************************/

@@ -5,6 +5,7 @@ define(['app'], function(app) {
 		order : 5,
 		label : 'Logs',
 		interval : 1000,
+		neededCapabilities : ['query_log_server'],
 		data : {
 			log : ['Loading... Please wait'],
 		},

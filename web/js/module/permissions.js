@@ -4,7 +4,8 @@ define(['app'], function(app) {
 		id : 'permissions',
 		order : 10,
 		label : 'Permissions',
-		interval : 60000,
+		interval : 6000,
+		neededCapabilities : ['query_permissions'],
 		data : {
 			permissions : {},
 		},
@@ -14,29 +15,30 @@ define(['app'], function(app) {
 		return {
 			restrict : 'A',
 			replace : 'true',
-			template : '<li class="glyphicon" ng-class="data.zone == permZone && data.group != null ? \'glyphicon-menu-down\' : \'glyphicon-menu-right\'"> ' + //
-			'    <a href="#" ng-click="data.zone = permZone; selectGroup(false)">Groups</a>' + //
-			'    <ul ng-show="data.zone == permZone && data.group != null">' + //
-			'        <li ng-repeat="(name, perms) in permZone.groupPermissions | orderBy: \'name\'" ' + //
-			'                class="glyphicon" ng-class="data.group == name ? \'glyphicon-menu-down\' : \'glyphicon-menu-right\'">' + //
-			'            <a href="#" ng-click="selectGroup(name)" ng-class="{active: data.group == name}" ng-bind="name"></a>' + //
-			'            <ul ng-show="data.group == name">' + //
+			template : '<li class="node" ng-class="{active: expanded}"> ' + //
+			'    <a href="#" ng-click="expanded = !expanded">Groups</a>' + //
+			'    <ul>' + //
+			'        <li class="node" ng-repeat="(name, perms) in zone.groupPermissions | orderBy: \'name\'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">' + //
+			'            <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="name"></a>' + //
+			'            <ul>' + //
+			'                <a class="btn btn-xs btn-success" href="#" ng-click="editGroupPerm(name)">Add permission</a></li>' + //
 			'                <li ng-repeat="(key, value) in perms | orderBy: \'key\'">' + //
-			'                    <a class="btn btn-xs btn-danger" href="#">-</a>' + //
-			'                    {{ key }} = {{ value }}' + //
+			'                    <a class="btn btn-xs btn-danger" href="#" ng-click="deleteGroupPerm(name, key)">-</a>' + //
+			'                    <a href="#" ng-click="editGroupPerm(name, key, value)">{{ key }} = {{ value }}</a>' + //
 			'                </li>' + //
 			'            </ul>' + //
 			'        </li>' + //
 			'    </ul>' + //
 			'</li>',
 			scope : {
-				permZone : '=groupPerms'
+				zone : '=groupPerms'
 			},
 			link : function(scope, element, attrs) {
-				scope.data = module.data;
-				scope.selectGroup = function(group) {
-					module.data.group = (module.data.group != null && group == false) ? null : group;
-					module.data.player = null;
+				scope.editGroupPerm = function(name, key, value) {
+					module.editGroupPerm(scope.zone, name, key, value);
+				};
+				scope.deleteGroupPerm = function(name, key) {
+					module.deleteGroupPerm(scope.zone, name, key);
 				};
 			},
 		};
@@ -46,64 +48,114 @@ define(['app'], function(app) {
 		return {
 			restrict : 'A',
 			replace : 'true',
-			template : '<li class="glyphicon" ng-class="data.zone == permZone && data.player != null ? \'glyphicon-menu-down\' : \'glyphicon-menu-right\'"> ' + //
-			'    <a href="#" ng-click="data.zone = permZone; selectPlayer(false)">Players</a>' + //
-			'    <ul ng-show="data.zone == permZone && data.player != null">' + //
-			'        <li ng-repeat="(name, perms) in permZone.playerPermissions | orderBy: \'name\'" ' + //
-			'                class="glyphicon" ng-class="data.player == name ? \'glyphicon-menu-down\' : \'glyphicon-menu-right\'">' + //
-			'            <a href="#" ng-click="selectPlayer(name)" ng-class="{active: data.player == name}" ng-bind="name"></a>' + //
-			'            <ul ng-show="data.player == name">' + //
+			template : '<li class="node" ng-class="{active: expanded}"> ' + //
+			'    <a href="#" ng-click="expanded = !expanded">Players</a>' + //
+			'    <ul>' + //
+			'        <li class="node" ng-repeat="(name, perms) in zone.playerPermissions | orderBy: \'name\'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">' + //
+			'            <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="name"></a>' + //
+			'            <ul>' + //
+			'                <a class="btn btn-xs btn-success" href="#" ng-click="editPlayerPerm(name)">Add permission</a></li>' + //
 			'                <li ng-repeat="(key, value) in perms | orderBy: \'key\'">' + //
-			'                    {{ key }} = {{ value }}' + //
-			'                    <a class="btn btn-sm btn-warning" href="#"><span class="glyphicon glyphicon-minus"></span></a>' + //
+			'                    <a class="btn btn-xs btn-danger" href="#" ng-click="deletePlayerPerm(name, key)">-</a>' + //
+			'                    <a href="#" ng-click="editPlayerPerm(name, key, value)">{{ key }} = {{ value }}</a>' + //
 			'                </li>' + //
 			'            </ul>' + //
 			'        </li>' + //
 			'    </ul>' + //
 			'</li>',
 			scope : {
-				permZone : '=playerPerms'
+				zone : '=playerPerms'
 			},
 			link : function(scope, element, attrs) {
-				scope.data = module.data;
-				scope.selectPlayer = function(player) {
-					module.data.player = (module.data.player != null && player == false) ? null : player;
-					module.data.group = null;
+				scope.editPlayerPerm = function(name, key, value) {
+					module.editPlayerPerm(scope.zone, name, key, value);
+				};
+				scope.deletePlayerPerm = function(name, key) {
+					module.deletePlayerPerm(scope.zone, name, key);
 				};
 			},
 		};
 	});
 
-	module.controller = ['$scope', 'moduleManager',
-	function($scope, moduleManager) {
+	module.controller = ['$scope', '$q', 'moduleManager',
+	function($scope, $q, moduleManager) {
 		$scope.data = module.data;
 		module.scope = $scope;
-
-		this.selectWorld = function(world) {
-			if (module.data.worldZone == world)
-				world = null;
-			module.data.zone = world;
-			module.data.worldZone = world;
-			module.data.group = null;
-			module.data.player = null;
+		
+		this.refresh = function() {
+			moduleManager.forceUpdate();
 		};
 
-		this.selectArea = function(area) {
-			if (module.data.zone == area)
-				world = null;
-			module.data.zone = area;
-			module.data.group = null;
-			module.data.player = null;
+		$scope.tmp = {};
+		var permPromise;
+		this.submit = function() {
+			if (permPromise) {
+				permPromise.resolve({
+					key: $scope.tmp.key,
+					value: $scope.tmp.value,
+				});
+				permPromise = null;
+			}
+		};
+		module.permPopup = function(key, value, callback) {
+			permPromise = $q.defer();
+			$scope.tmp.key = key;
+			$scope.tmp.value = value;
+			$('#perm-popup').modal();
+			return permPromise.promise;
 		};
 
-		this.selectGroup = function(group) {
-			module.data.group = (module.data.group != null && group == false) ? null : group;
-			module.data.player = null;
+		module.editGroupPerm = function(zone, name, key, value) {
+			module.permPopup(key, value).then(function(data) {
+				zone.groupPermissions[name][data.key] = data.value;
+				moduleManager.post('module/permissions/data', {
+					id : zone.id,
+					group : name,
+					key : data.key,
+					value : data.value,
+				}, function(data) {
+					// OK!
+				});
+				moduleManager.forceUpdate();
+			});
 		};
-
-		this.selectPlayer = function(player) {
-			module.data.player = (module.data.player != null && player == false) ? null : player;
-			module.data.group = null;
+		module.editPlayerPerm = function(zone, name, key, value) {
+			module.permPopup(key, value).then(function(data) {
+				zone.playerPermissions[name][data.key] = data.value;
+				moduleManager.post('module/permissions/data', {
+					id : zone.id,
+					player : name,
+					key : data.key,
+					value : data.value,
+				}, function(data) {
+					// OK!
+				});
+				moduleManager.forceUpdate();
+			});
+		};
+		module.deleteGroupPerm = function(zone, name, key) {
+			delete zone.groupPermissions[name][key];
+			moduleManager.post('module/permissions/data', {
+				id : zone.id,
+				group : name,
+				key : key,
+				value : null,
+			}, function(data) {
+				// OK!
+			});
+			moduleManager.forceUpdate();
+		};
+		module.deletePlayerPerm = function(zone, name, key) {
+			delete zone.playerPermissions[name][key];
+			moduleManager.post('module/permissions/data', {
+				id : zone.id,
+				player : name,
+				key : key,
+				value : null,
+			}, function(data) {
+				// OK!
+			});
+			moduleManager.forceUpdate();
 		};
 
 		this.sendCommand = function(command) {
@@ -120,6 +172,12 @@ define(['app'], function(app) {
 			});
 			moduleManager.forceUpdate();
 		};
+
+		$('#perm-popup').on('hide.bs.modal', function() {
+			$scope.$apply(function() {
+
+			});
+		});
 	}];
 
 	module.update = function(data) {
