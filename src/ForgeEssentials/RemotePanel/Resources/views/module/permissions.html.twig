@@ -1,0 +1,36 @@
+{% verbatim %}
+<ul class="treeview">
+    <li class="glyphicon glyphicon-menu-down">
+        <a>ROOT</a>
+        <ul ng-cloak>
+            
+            <!-- ROOT PERMS -->
+            <li x-group-perms="data.root"></li>
+            <li x-player-perms="data.root"></li>
+            
+            <!-- WORLDS -->
+            <li ng-repeat="world in data.root.worldZones | orderBy: 'id'"
+                    class="glyphicon" ng-class="data.worldZone == world ? 'glyphicon-menu-down' : 'glyphicon-menu-right'">
+                <a href="#" ng-click="module.selectWorld(world)">WORLD_{{ world.dimensionID }}</a>
+                <ul ng-show="data.worldZone == world">
+                    
+                    <!-- WORLD PERMS -->
+                    <li x-group-perms="world"></li>
+                    <li x-player-perms="world"></li>
+                    
+                    <!-- AREAS -->
+                    <li ng-repeat="area in world.areaZones | orderBy: 'name'"
+                            class="glyphicon" ng-class="data.zone == area ? 'glyphicon-menu-down' : 'glyphicon-menu-right'">
+                        <a href="#" ng-click="module.selectArea(area)" ng-bind="area.name"></a>
+                        <ul ng-show="data.zone == area">
+                            <!-- AREA PERMS -->
+                            <li x-group-perms="area"></li>
+                            <li x-player-perms="area"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+{% endverbatim %}

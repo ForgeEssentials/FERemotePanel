@@ -141,6 +141,7 @@ class RemotePanel {
 			'chat',
 			'serverlog',
 			'graphs',
+			'permissions',
 		);
 	}
 
