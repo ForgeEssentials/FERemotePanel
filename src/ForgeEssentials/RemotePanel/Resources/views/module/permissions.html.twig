@@ -9,7 +9,7 @@
             <li x-player-perms="data.root"></li>
             
             <!-- WORLDS -->
-            <li class="node" ng-repeat="world in data.root.worldZones | orderBy: 'id'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
+            <li class="node" ng-repeat="world in data.root.worldZones | orderObjectBy: 'dimensionID' track by world.id" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
                 <a href="#" ng-click="nodeExpanded = !nodeExpanded">WORLD_{{ world.dimensionID }}</a>
                 <ul>
                     
@@ -18,7 +18,7 @@
                     <li x-player-perms="world"></li>
                     
                     <!-- AREAS -->
-                    <li class="node" ng-repeat="area in world.areaZones | orderBy: 'name'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
+                    <li class="node" ng-repeat="area in world.areaZones | orderObjectBy: 'name' track by area.id" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">
                         <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="area.name"></a>
                         <ul>
                             <!-- AREA PERMS -->
