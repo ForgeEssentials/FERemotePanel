@@ -142,6 +142,7 @@ class RemotePanel {
 			'serverlog',
 			'graphs',
 			'permissions',
+			'map',
 		);
 	}
 

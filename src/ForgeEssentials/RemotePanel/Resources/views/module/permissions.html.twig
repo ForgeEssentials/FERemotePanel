@@ -2,7 +2,7 @@
 <ul class="treeview">
     <li class="active">
         <a href="#" ng-click="module.refresh()">ROOT (click to refresh)</a>
-        <ul ng-cloak>
+        <ul ng-cloak ng-init="items = {a:'A', d:'D', c:'C', b:'B'}; items2 = {a:{value:'A'}, d:{value:'D'}, c:{value:'C'}, b:{value:'B'}}; ">
             
             <!-- ROOT PERMS -->
             <li x-group-perms="data.root"></li>

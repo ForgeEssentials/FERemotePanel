@@ -14,10 +14,35 @@ define(['app'], function(app) {
 		};
 	});
 
+	app.filter('toArray', function() {
+		return function(obj, addKey) {
+			if (!angular.isObject(obj))
+				return obj;
+			if (addKey === false) {
+				return Object.keys(obj).map(function(key) {
+					return obj[key];
+				});
+			} else {
+				var result = Object.keys(obj).map(function(key) {
+					var value = obj[key];
+					return angular.isObject(value) ? Object.defineProperty(value, '$key', {
+						enumerable : false,
+						value : key
+					}) : {
+						$key : key,
+						$value : value
+					};
+				});
+				return result;
+			}
+		};
+	});
+
 	app.filter('orderObjectBy', function() {
 		return function(items, field, reverse) {
 			var filtered = [];
-			angular.forEach(items, function(item) {
+			angular.forEach(items, function(item, key) {
+				item.$key = key;
 				filtered.push(item);
 			});
 			filtered.sort(function(a, b) {
@@ -33,7 +58,8 @@ define(['app'], function(app) {
 		};
 	});
 
-	app.filter('unsafe', ['$sce', function($sce) {
+	app.filter('unsafe', ['$sce',
+	function($sce) {
 		return $sce.trustAsHtml;
 	}]);
 

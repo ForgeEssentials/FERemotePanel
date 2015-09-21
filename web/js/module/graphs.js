@@ -82,6 +82,7 @@ define(['app'], function(app) {
 
 	module.controller = ['$scope', '$filter', function($scope, $filter) {
 		$scope.data = module.data;
+		module.scope = $scope;
 		module.filter = $filter;
 	}];
 

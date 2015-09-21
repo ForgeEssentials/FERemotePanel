@@ -97,10 +97,12 @@ define(['app'], function(app) {
 			manager.get(url, data, function(data) {
 				startUpdateTimer();
 				module.lastTimestamp = data.timestamp;
-				if (module.update)
-					module.update(data);
-				else
-					angular.extend(module.data, data);
+				if (data) {
+					if (module.update)
+						module.update(data);
+					else
+						angular.extend(module.data, data);
+				}
 			}, function(error) {
 				startUpdateTimer();
 			});

@@ -18,11 +18,11 @@ define(['app'], function(app) {
 			template : '<li class="node" ng-class="{active: expanded}"> ' + //
 			'    <a href="#" ng-click="expanded = !expanded">Groups</a>' + //
 			'    <ul>' + //
-			'        <li class="node" ng-repeat="(name, perms) in zone.groupPermissions | orderBy: \'name\'" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">' + //
-			'            <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="name"></a>' + //
+			'        <li class="node" ng-repeat="group in zone.groupPermissions | toArray | orderBy:\'$key\' track by group.$key" ng-class="{active: nodeExpanded}" ng-init="nodeExpanded = false">' + //
+			'            <a href="#" ng-click="nodeExpanded = !nodeExpanded" ng-bind="group.$key"></a>' + //
 			'            <ul>' + //
 			'                <a class="btn btn-xs btn-success" href="#" ng-click="editGroupPerm(name)">Add permission</a></li>' + //
-			'                <li ng-repeat="(key, value) in perms | orderBy: \'key\'">' + //
+			'                <li ng-repeat="(key, value) in group">' + //
 			'                    <a class="btn btn-xs btn-danger" href="#" ng-click="deleteGroupPerm(name, key)">-</a>' + //
 			'                    <a href="#" ng-click="editGroupPerm(name, key, value)">{{ key }} = {{ value }}</a>' + //
 			'                </li>' + //

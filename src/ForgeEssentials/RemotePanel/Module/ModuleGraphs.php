@@ -4,10 +4,6 @@ namespace ForgeEssentials\RemotePanel\Module;
 
 use ForgeEssentials\RemotePanel\RemotePanel;
 
-use ForgeEssentials\Remote\Client;
-
-use Twig_Environment;
-
 class ModuleGraphs extends Module {
 
 	public function getId() {
