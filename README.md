@@ -9,6 +9,7 @@ Web panel for ForgeEssential powered servers using FERemote API
  3. Run `composer install` (Get composer from https://getcomposer.org/download/)
  4. Set the `web` directory as document root
  5. (Optionally) Configure settings via `config/config.json`
+ 6. Use `/remote` command as a player on your MC server to get your personal login data
 
 ## Configuration (config.json)
 
