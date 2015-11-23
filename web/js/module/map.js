@@ -39,7 +39,7 @@ define(['app'], function(app) {
 		});
 		//map.setView([0, 0], 0);
 
-		L.tileLayer('module/map/data?dim={id}&x={x}&z={y}&zoom={z}', {// &zoom={z}
+		L.tileLayer('module/map/data?dim={id}&x={x}&z={y}', {// &zoom={z}
 			attribution : 'Map data &copy; FE',
 			continuousWorld : true,
 			minZoom : 0,
