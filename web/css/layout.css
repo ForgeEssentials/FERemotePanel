@@ -28,6 +28,10 @@ body {
 	padding-top: 50px;
 }
 
+body.modal-open {
+	overflow: auto;
+}
+
 .container-fluid {
 	padding-left: 10px;
 	padding-right: 10px;
