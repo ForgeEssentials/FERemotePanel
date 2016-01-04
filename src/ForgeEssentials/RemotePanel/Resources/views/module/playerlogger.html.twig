@@ -1,0 +1,32 @@
+{% verbatim %}<h1>Playerlogger</h1>
+
+<h2>Players - <span ng-bind="data.players.length|ifUndefined:0">0</span></h2>
+<div class="table-responsive">
+    <table class="table table-condensed" style="">
+        <thead>
+            <th>Time</th>
+            <th>Action</th>
+            <th>Location</th>
+            <th>World ID</th>
+            <th>Player</th>
+            <th>Details</th>
+        </thead>
+        <tr ng-cloak ng-repeat="action in data.actions | orderBy: 'time'">
+            <td ng-bind="action.time | ifUndefined:'N/A'">-</td>
+            <td>
+                <span ng-bind="actionTypes[action.action] | ifUndefined:'N/A'">-</span><span ng-if="action.action == 1" ng-bind="'-' + action.type.toLowerCase().replace('_', '-')"></span>
+            </td>
+            <td>
+                <span ng-bind="action.x | number:1 | ifUndefined:'-'">0</span>,
+                <span ng-bind="action.y | number:1 | ifUndefined:'-'">0</span>,
+                <span ng-bind="action.z | number:1 | ifUndefined:'-'">0</span>
+            </td>
+            <td ng-bind="data.worlds[action.world].name | ifUndefined:'-'">0</td>
+            <td ng-bind="data.players[action.player].username | ifUndefined:(data.players[action.player].uuid | ifUndefined:'-')">N/A</td>
+            
+            <td ng-if="action.action == 1" ng-bind="data.blocks[action.block].name | ifUndefined:'-'">N/A</td>
+            <td ng-if="action.action == 2" ng-bind="action.command + ' ' + action.arguments | ifUndefined:'-'">N/A</td>
+        </tr>
+    </table>
+</div>
+{% endverbatim %}

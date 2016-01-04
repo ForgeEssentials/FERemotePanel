@@ -143,6 +143,7 @@ class RemotePanel {
 			'graphs',
 			'permissions',
 			'map',
+			'playerlogger',
 		);
 	}
 
