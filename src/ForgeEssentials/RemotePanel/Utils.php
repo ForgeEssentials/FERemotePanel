@@ -8,7 +8,7 @@ abstract class Utils {
 		return (object) array(
 			'webRoot' => dirname($_SERVER['SCRIPT_FILENAME']),
 			'projectRoot' => dirname(WEB_ROOT),
-			'basePath' => isset($_SERVER['BASE']) ? $_SERVER['BASE'] : (isset($_SERVER['REDIRECT_BASE']) ? $_SERVER['REDIRECT_BASE'] : dirname($_SERVER['SCRIPT_NAME'])),
+			'basePath' => isset($_SERVER['BASE']) ? $_SERVER['BASE'] : (isset($_SERVER['REDIRECT_BASE']) ? $_SERVER['REDIRECT_BASE'] : Utils::stripTrailingSlash(dirname($_SERVER['SCRIPT_NAME']))),
 			'baseUrl' => (isset($_SERVER['BASE']) || isset($_SERVER['REDIRECT_BASE'])) && basename($_SERVER['SCRIPT_NAME']) == 'app.php' ? BASE_PATH : $_SERVER['SCRIPT_NAME'],
 			'path' => Utils::stripTrailingSlash(parse_url(isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : substr($_SERVER['REQUEST_URI'], strlen(BASE_URL)), PHP_URL_PATH)),
 			'method' => $_SERVER['REQUEST_METHOD'],
@@ -16,7 +16,7 @@ abstract class Utils {
 	}
 
 	protected static function stripTrailingSlash($value) {
-		if ($value[strlen($value) - 1] == '/')
+		if (strlen($value) > 0 && $value[strlen($value) - 1] == '/')
 			return substr($value, 0, strlen($value) - 1);
 		return $value;
 	}
